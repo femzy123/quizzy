@@ -1,103 +1,143 @@
-import Image from "next/image";
+// app/page.jsx
+import Link from 'next/link';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import SiteHeader from '@/components/SiteHeader';
+import { createClient } from '@/utils/supabase/server'; // your server.js export
 
-export default function Home() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const ctaHref = user ? '/dashboard' : '/auth/login';
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="scroll-smooth">
+      <SiteHeader isAuthed={!!user} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero */}
+      <section className="mx-auto max-w-6xl px-4 py-20" id="hero">
+        <div className="grid items-center gap-8 md:grid-cols-2">
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold leading-tight md:text-5xl">
+              Turn your notes into quizzes — instantly.
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Paste content, pick question types, and generate a timed quiz with instant scoring.
+            </p>
+            <div className="flex gap-3">
+              <Button asChild size="lg"><Link href={ctaHref}>Build a quiz</Link></Button>
+              <Button asChild size="lg" variant="outline"><a href="#how">See how it works</a></Button>
+            </div>
+          </div>
+
+          <Card className="border-dashed">
+            <CardContent className="p-6">
+              <div className="rounded-2xl border p-4 shadow-sm">
+                <div className="mb-4 text-sm text-muted-foreground">Preview</div>
+                <div className="space-y-3">
+                  <div className="h-4 w-3/4 rounded bg-muted" />
+                  <div className="h-4 w-1/2 rounded bg-muted" />
+                  <div className="h-4 w-2/3 rounded bg-muted" />
+                </div>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <div className="h-10 rounded bg-muted" />
+                  <div className="h-10 rounded bg-muted" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="mx-auto max-w-6xl px-4 py-20">
+        <h2 className="text-2xl font-semibold md:text-3xl">Features</h2>
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            ['Multi-format questions','MCQ, True/False, Short answer, Cloze, Matching, Ordering.'],
+            ['Timed quizzes','Auto-submit and score when time runs out.'],
+            ['Smart feedback','AI-like remarks after scoring.'],
+          ].map(([title,desc], i) => (
+            <Card key={i}><CardContent className="p-6">
+              <h3 className="font-medium">{title}</h3>
+              <p className="text-sm text-muted-foreground mt-2">{desc}</p>
+            </CardContent></Card>
+          ))}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section id="how" className="mx-auto max-w-6xl px-4 py-20">
+        <h2 className="text-2xl font-semibold md:text-3xl">How it works</h2>
+        <ol className="mt-6 space-y-3 text-muted-foreground">
+          <li>1. {user ? 'Open your dashboard' : 'Sign in'}.</li>
+          <li>2. Create a quiz: title, duration, types, difficulty.</li>
+          <li>3. Paste content or upload JSON.</li>
+          <li>4. Generate & take the timed quiz.</li>
+          <li>5. See score + feedback.</li>
+        </ol>
+        <div className="mt-8"><Button asChild><Link href={ctaHref}>Start now</Link></Button></div>
+      </section>
+
+       {/* FAQ */}
+       <section id="faq" className="mx-auto max-w-6xl px-4 py-20">
+        <h2 className="text-2xl font-semibold md:text-3xl">FAQ</h2>
+        <div className="mt-6 space-y-6">
+          <div>
+            <p className="font-medium">Do I need an account?</p>
+            <p className="text-muted-foreground">
+              You’ll sign in with a magic link to access your dashboard and saved quizzes.
+            </p>
+          </div>
+          <div>
+            <p className="font-medium">Can I mix question formats?</p>
+            <p className="text-muted-foreground">
+              Yes — pick any combination during creation.
+            </p>
+          </div>
+          <div>
+            <p className="font-medium">Will there be analytics?</p>
+            <p className="text-muted-foreground">
+              Basic scoring is built-in; deeper analytics can be added with Supabase later.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact / Footer */}
+      <section id="contact" className="mx-auto max-w-6xl px-4 py-20">
+        <Card>
+          <CardContent className="p-6 md:p-8">
+            <div className="grid gap-6 md:grid-cols-2 md:items-center">
+              <div>
+                <h3 className="text-xl font-semibold">Questions?</h3>
+                <p className="text-muted-foreground mt-2">
+                  We’d love to hear from you. Reach out and we’ll help you get set up fast.
+                </p>
+              </div>
+              <div className="flex gap-3 md:justify-end">
+                <Button asChild variant="outline">
+                  <a href="mailto:hello@example.com">Email us</a>
+                </Button>
+                <Button asChild>
+                  <Link href={ctaHref}>Go to {user ? "Dashboard" : "Sign in"}</Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* FAQ / Footer trimmed for brevity */}
+      <footer className="border-t">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-8 text-sm text-muted-foreground">
+          <span>© {new Date().getFullYear()} QuizCraft</span>
+          <div className="flex gap-4">
+            <a href="#features" className="hover:opacity-80">Features</a>
+            <a href="#how" className="hover:opacity-80">How it works</a>
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
